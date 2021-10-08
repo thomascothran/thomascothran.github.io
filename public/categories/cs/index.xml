@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CS on Thomas Cothran, EdjSports Software Architect</title>
+    <link>https://thomascothran.tech/categories/cs/</link>
+    <description>Recent content in CS on Thomas Cothran, EdjSports Software Architect</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>CC BY 4.0 CN</copyright>
+    <lastBuildDate>Mon, 17 Jul 2017 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://thomascothran.tech/categories/cs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Haskell&#39;s Triangle</title>
+      <link>https://thomascothran.tech/2017/07/haskells-triangle/</link>
+      <pubDate>Mon, 17 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2017/07/haskells-triangle/</guid>
+      <description>The polymath Blaise Pascal envisaged a triangle built of numbers. Pascal’s triangle — as it is usually called, despite the fact that its discovery predated Pascal by centuries — has the interesting property that each number is the sum of the two numbers directly above it.
+In this post we will use Pascal’s triangle to demonstrate how recursion (i.e., a procedure that invokes itself in its definition) can be used to make complex problems easily soluble, using examples written in both Haskell and JavaScript.</description>
+    </item>
+    
+    <item>
+      <title>Recursion Made Simple with Roman Numerals</title>
+      <link>https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</link>
+      <pubDate>Mon, 17 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</guid>
+      <description>A procedure is recursive if it invokes itself. Thus:
+const toInfinityAndBeyond = num =&amp;gt; toInfinityAndBeyond(num + 1);  Of course, toInfinityAndBeyond is only useful if, rather than seeking an answer, you want to blow your call stack. But you see the point: we find toInfinityAndBeyond in its own body. What possible use could this be?
+Recursion is often well suited to express the logic of a problem. Let’s take a simple problem: the conversion of Roman to Arabic numerals.</description>
+    </item>
+    
+  </channel>
+</rss>

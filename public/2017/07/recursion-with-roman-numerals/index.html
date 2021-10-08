@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Recursion Made Simple with Roman Numerals - Thomas Cothran, EdjSports Software Architect
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="A procedure is recursive if it invokes itself. This article explains recursion in a simple way by examining functions that convert between Arabic and roman numerals." />
+    <meta name="generator" content="Hugo 0.87.0 with theme pure" />
+    <title>Recursion Made Simple with Roman Numerals - Thomas Cothran, EdjSports Software Architect</title>
+    
+    
+    <link rel="stylesheet" href="https://thomascothran.tech/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Recursion Made Simple with Roman Numerals" />
+<meta property="og:description" content="A procedure is recursive if it invokes itself. This article explains recursion in a simple way by examining functions that convert between Arabic and roman numerals." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://thomascothran.tech/2017/07/recursion-with-roman-numerals/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-07-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-07-17T00:00:00+00:00" />
+
+<meta itemprop="name" content="Recursion Made Simple with Roman Numerals">
+<meta itemprop="description" content="A procedure is recursive if it invokes itself. This article explains recursion in a simple way by examining functions that convert between Arabic and roman numerals."><meta itemprop="datePublished" content="2017-07-17T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2017-07-17T00:00:00+00:00" />
+<meta itemprop="wordCount" content="876">
+<meta itemprop="keywords" content="recursion,javascript," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Recursion Made Simple with Roman Numerals"/>
+<meta name="twitter:description" content="A procedure is recursive if it invokes itself. This article explains recursion in a simple way by examining functions that convert between Arabic and roman numerals."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank">
+            <img class="img-circle img-rotate" src="https://thomascothran.tech/thomascothran.jpeg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Thomas Cothran</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Architect, EdjSports</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Louisville, KY</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/cs/" class="category-list-link">cs</a><span class="category-list-count">2</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://thomascothran.tech/tags/haskell/" class="tag-list-link" rel="1">haskell<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/javascript/" class="tag-list-link" rel="1">javascript<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/recursion/" class="tag-list-link" rel="2">recursion<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2017/07/haskells-triangle/" class="title">Haskell&#39;s Triangle</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-07-17 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-07-17</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2017/07/recursion-with-roman-numerals/" class="title">Recursion Made Simple with Roman Numerals</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-07-17 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-07-17</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-recursion-made-simple" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2017/07/recursion-with-roman-numerals/"
+    >Recursion Made Simple with Roman Numerals</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://thomascothran.tech/2017/07/recursion-with-roman-numerals/" class="article-date">
+  <time datetime="2017-07-17 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-07-17</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/cs/"> CS </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/recursion/"> recursion </a>
+    <a class="article-tag-link" href="/tags/javascript/"> javascript </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 876 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 5 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>A procedure is recursive if it invokes itself. Thus:</p>
+<pre><code class="language-javascript">const toInfinityAndBeyond = num =&gt; toInfinityAndBeyond(num + 1);
+</code></pre>
+<p>Of course, <code>toInfinityAndBeyond</code> is only useful if, rather than seeking an answer, you want to blow your call stack. But you see the point: we find <code>toInfinityAndBeyond</code> in its own body. What possible use could this be?</p>
+<p>Recursion is often well suited to express the logic of a problem. Let’s take a simple problem: the conversion of Roman to Arabic numerals. One solution is this one:</p>
+<pre><code class="language-javascript">function deromanize (str) {
+	var	str = str.toUpperCase(),
+		validator = /^M*(?:D?C{0,3}|C[MD])(?:L?X{0,3}|X[CL])(?:V?I{0,3}|I[XV])$/,
+		token = /[MDLV]|C[MD]?|X[CL]?|I[XV]?/g,
+		key = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1},
+		num = 0, m;
+	if (!(str &amp;&amp; validator.test(str)))
+		return false;
+	while (m = token.exec(str))
+		num += key[m[0]];
+	return num;
+}
+</code></pre>
+<p>We might be interested in solving this problem differently for a number of reasons, perhaps to avoid the pitfalls that go along with complex regular expressions, or because we want to avoid mutating variables. Most relevant for our purposes is the key object. Note how it includes not only M:1000, but also entries like CM: 900 and IV: 4. This hard wires crucial logic rather than expressing it.</p>
+<h2 id="a-first-stab">A First Stab</h2>
+<p>Recursion gives us a more expressive way to approach the problem, one that allows us to use a single pure function that does not mutate variables. Here is a first stab:</p>
+<pre><code class="language-javascript">const nums = {I: 1, V: 5, X: 10, L: 50, C: 100, M: 1000};
+
+const arabify = (romNum) =&gt; {
+    if (romNum.length === 0) {
+        return 0;
+    } else if (nums[romNum[0]] &lt; nums[romNum[1]]) {
+        return (nums[romNum[1]] - nums[romNum[0]] + arabify(romNum.slice(2)));
+    } else {
+        return (nums[romNum[0]] + arabify(romNum.slice(1)));
+    }
+}
+</code></pre>
+<p>This has the benefit of expressing the logic of converting valid (or even some invalid!) Roman numerals to Arabic numerals, but it has some problems as well. Let’s consider the good before the bad.
+The Good</p>
+<p>In the first place, we are not using variables or complex regular expressions. More to the point, in our nums object, we have no need of shortcuts like IX: 9 or CM: 900 — our program handles this for us. How?</p>
+<p>The function <code>arabify</code> takes a string, which we are assuming to be valid Roman numerals. If that string is empty, it simply returns 0. An empty string is our base case, the point at which <code>arabify</code> stops calling itself. Without a base case, the <code>arabify</code> calls will just keep piling up on the stack until there is a stack overflow.</p>
+<p>If the string passed to <code>arabify</code> is not empty, we must determine the relation of the first two characters. If the first character is less than the second character — <code>nums[romNum[0]] &lt; nums[romNum[1]</code> — we know that the former should be subtracted from the latter. That is, if X represents 10 and C a 100, then XC is 90.</p>
+<p>Why in the case where the first two characters require the first be subtracted from the second do we need the call again to <code>arabify</code>? Because we could have a case like XCII, where we not only need to subtract the first item from the second, but the result must be added to the remaining numerals.</p>
+<p>If the first numeral is not less than the second numeral, the solution is straightforward: add the first numeral to the value of the rest. We can simply call <code>arabify</code> on the remainder of the string from Roman numerals to find that value.</p>
+<h2 id="the-bad">The Bad</h2>
+<p>One downside to <code>arabify</code> is that it’s not the most readable. Wouldn’t it be nice if instead of having to parse things like <code>nums[romNum[0]] &lt; nums[romNum[1]</code>, we could have <code>nums[fst] &lt; nums[snd]</code> instead?</p>
+<p>The second problem is unlikely to arise in this particular context, but pointing it out is useful. The calls to <code>arabify</code> are going to keep piling on the call stack until the base case is reached — an empty string, then each call can be evaluated and the final answer returned. This means that <code>arabify</code> will consume memory roughly proportionally with the size of the string passed in as an argument.</p>
+<p>Fortunately, the ES6 spec now includes tail call optimization. For recursive calls in the tail position, the function calls need no longer pile up on the stack. Let’s take a second stab at <code>arabify</code> that makes this clearer.</p>
+<h2 id="tail-call-optimization">Tail Call Optimization</h2>
+<p>arabify2 uses tail calls and is a bit easier to read.</p>
+<pre><code class="language-javascript">const nums = {I: 1, V: 5, X: 10, L: 50, C: 100, M: 1000};
+
+const arabify2 = (romNum, sum=0) =&gt; {
+    const [fst, snd, rest] = [romNum[0], romNum[1], romNum.slice(2)];
+    if (!snd) {return nums[fst] ? nums[fst] + sum : sum;}
+    else if (nums[snd] &gt; nums[fst]) {
+        return arabify2(rest, nums[snd] - nums[fst] + sum);
+    } else {return arabify2(snd + rest, nums[fst] + sum);}
+}
+</code></pre>
+<p>On line four, we use ES6 destructuring to so that we can say fst rather than romNum[0], snd rather than romNum[0], and rest rather than romNum.slice(2) or romNum.slice(1).</p>
+<p>Note the difference between the recursive calls to <code>arabify2</code> in comparison to <code>arabify</code>: we don’t make a call to <code>aribify2</code>and then do something else with it. <code>aribify2</code> uses the parameter sum to keep track of all the information it needs. There is no reason to ‘remember’ the previous aribify2 calls: the last call returns the result we are looking for.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://thomascothran.tech/2017/07/recursion-with-roman-numerals/" title="Recursion Made Simple with Roman Numerals" target="_blank" rel="external">https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://thomascothran.tech/thomascothran.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank"><span class="text-dark">Thomas Cothran</span><small class="ml-1x">Software Architect, EdjSports</small></a></h3>
+        <div>FP, Clojure, Domain Driven Design</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="next">
+                <a href="https://thomascothran.tech/2017/07/haskells-triangle/"
+                    title="Haskell&#39;s Triangle"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" title="linkedin" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-linkedin"></i></a></li>
+    <li><a href="https://thomascothran.tech/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/thomas_cothran" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/clojure.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://thomascothran.tech/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://thomascothran.tech/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/thomascothran.tech',
+            CONTENT_URL: 'https:\/\/thomascothran.tech\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://thomascothran.tech/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
