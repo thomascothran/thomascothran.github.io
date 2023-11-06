@@ -3,8 +3,169 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://thomascothran.tech/tags/abstraction/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://thomascothran.tech/categories/</loc>
-    <lastmod>2017-07-17T00:00:00+00:00</lastmod>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/clojure/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/categories/clojure/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/posts/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/2023/11/readability/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/design/</loc>
+    <lastmod>2023-08-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/categories/design/</loc>
+    <lastmod>2023-08-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/2023/08/library-locker/</loc>
+    <lastmod>2023-08-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/architecture/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/2023/07/brittle-clojure/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/brittle-clojure/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/microservices/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/robust-clojure/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/categories/architecture/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/continuous-integration/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/2023/07/distributed-merges/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/dora/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/empiricism/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/tags/evidence-based-software/</loc>
+    <lastmod>2023-07-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/2023/07/dont-be-cremonini/</loc>
+    <lastmod>2023-07-09T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://thomascothran.tech/categories/evidence-based-software/</loc>
+    <lastmod>2023-07-09T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -38,13 +199,6 @@
   </url>
   
   <url>
-    <loc>https://thomascothran.tech/posts/</loc>
-    <lastmod>2017-07-17T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://thomascothran.tech/tags/recursion/</loc>
     <lastmod>2017-07-17T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -53,20 +207,6 @@
   
   <url>
     <loc>https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</loc>
-    <lastmod>2017-07-17T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://thomascothran.tech/tags/</loc>
-    <lastmod>2017-07-17T00:00:00+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://thomascothran.tech/</loc>
     <lastmod>2017-07-17T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

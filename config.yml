@@ -1,14 +1,14 @@
 baseURL: https://thomascothran.tech
 theme: pure
-title: Thomas Cothran, EdjSports Software Architect
-copyright: CC BY 4.0 CN
+title: Thomas Cothran, Software Developer
+copyright: 2023, Thomas Cothran
 defaultContentLanguage: en  # en/zh/...
 footnoteReturnLinkContents: ↩
 hasCJKLanguage: true
 paginate: 7
 enableEmoji: true
 PygmentsCodeFences: false
-googleAnalytics: ""      # UA-XXXXXXXX-X 
+googleAnalytics: ""      # UA-XXXXXXXX-X
 permalinks:
   posts: /:year/:month/:filename/
 
@@ -16,7 +16,7 @@ taxonomies:
     category : categories
     tag : tags
     series : series
-outputFormats:          # use for search. recommend not to modify 
+outputFormats:          # use for search. recommend not to modify
   SearchIndex:
     mediaType: "application/json"
     baseName: "searchindex"
@@ -30,6 +30,11 @@ sitemap:
   changefreq: monthly
   filename: sitemap.xml
   priority: 0.5
+
+markup:
+  goldman:
+    renderer:
+      unsafe: true
 
 menu:
   main:
@@ -101,7 +106,7 @@ params:
     avatar: thomascothran.jpeg
     gravatar: # Gravatar email address, if you enable Gravatar, your avatar config will be overriden
     author: Thomas Cothran
-    author_title: Software Architect, EdjSports
+    author_title: Software Developer
     author_description: FP, Clojure, Domain Driven Design
     location: Louisville, KY
     follow: https://www.linkedin.com/in/thomas-cothran-02b24995/
@@ -202,4 +207,3 @@ params:
     - tag_cloud
     # - tag
     - recent_posts
-

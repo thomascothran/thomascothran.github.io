@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        The Library Locker - An Antipattern - Thomas Cothran, Software Developer
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns." />
+    <meta name="generator" content="Hugo 0.120.3 with theme pure" />
+    <title>The Library Locker - An Antipattern - Thomas Cothran, Software Developer</title>
+    
+    
+    <link rel="stylesheet" href="https://thomascothran.tech/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="The Library Locker - An Antipattern" />
+<meta property="og:description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://thomascothran.tech/2023/08/library-locker/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-08-20T00:00:00+00:00" />
+
+<meta itemprop="name" content="The Library Locker - An Antipattern">
+<meta itemprop="description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns."><meta itemprop="datePublished" content="2023-08-20T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-08-20T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1941">
+<meta itemprop="keywords" content="design,clojure," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Library Locker - An Antipattern"/>
+<meta name="twitter:description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank">
+            <img class="img-circle img-rotate" src="https://thomascothran.tech/thomascothran.jpeg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Thomas Cothran</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Developer</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Louisville, KY</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/architecture/" class="category-list-link">architecture</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/clojure/" class="category-list-link">clojure</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/cs/" class="category-list-link">cs</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/design/" class="category-list-link">design</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/evidence-based-software/" class="category-list-link">evidence-based-software</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://thomascothran.tech/tags/abstraction/" class="tag-list-link" rel="1">abstraction<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/architecture/" class="tag-list-link" rel="1">architecture<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/brittle-clojure/" class="tag-list-link" rel="1">brittle-clojure<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/clojure/" class="tag-list-link" rel="3">clojure<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/continuous-integration/" class="tag-list-link" rel="1">continuous-integration<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/design/" class="tag-list-link" rel="1">design<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/dora/" class="tag-list-link" rel="2">dora<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/empiricism/" class="tag-list-link" rel="2">empiricism<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/evidence-based-software/" class="tag-list-link" rel="2">evidence-based-software<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/haskell/" class="tag-list-link" rel="1">haskell<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/javascript/" class="tag-list-link" rel="1">javascript<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/microservices/" class="tag-list-link" rel="2">microservices<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/recursion/" class="tag-list-link" rel="2">recursion<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/robust-clojure/" class="tag-list-link" rel="1">robust-clojure<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/11/readability/" class="title">The Wrong Kind of Readability</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-11-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-11-05</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/08/library-locker/" class="title">The Library Locker - An Antipattern</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-08-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-08-20</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/brittle-clojure/" class="title">Brittle Clojure: Creating Legacy Clojure Systems</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-23 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-23</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/distributed-merges/" class="title">Distributed Merges and Continuous Integration</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-14 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-14</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/dont-be-cremonini/" class="title">Don&#39;t Be a Cremonini</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-09</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-library-locker-antipattern" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2023/08/library-locker/"
+    >The Library Locker - An Antipattern</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://thomascothran.tech/2023/08/library-locker/" class="article-date">
+  <time datetime="2023-08-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-08-20</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/design/"> design </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/design/"> design </a>
+    <a class="article-tag-link" href="/tags/clojure/"> clojure </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1941 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>The &ldquo;Library Locker&rdquo; is a common anti-pattern for incorporating third party libraries into an application. The application wraps the library with its own function, which mixes concerns and makes the library more difficult to use.</p>
+<p>In this article, we will first consider the original problem the library locker is introduced to solve, then an example of the library locker, and then suggest better alternatives.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>Suppose we have system of microservices that support astronomical applications. We locate our calls to our other microservices in a <code>service</code> directory.</p>
+<p>Quickly, we find a certain pattern repeating itself. We need to prepare a request map and parse the response.</p>
+<pre><code class="language-clojure">(ns app.service.night-sky
+  &quot;Handles interactions with Night-Sky, a microservice owned by our team&quot;
+  (:require [app.auth-tokens :as auth]
+            [clj-http.client :as http]
+            [clojure.tools.logging :as log]
+            [jsonista :as j]))
+
+(defn find-star
+  &quot;Find a star in the night sky&quot;
+  [{user-id    :user/id
+    star-id    :star/id
+    root-trace :root-trace/id
+    request-id :request/id
+    :keys      [originating-system]
+    :or        {originating-system &quot;observatory&quot;
+                request-id         (random-uuid)}}]
+  (log/infof &quot;User %s is requesting star %s. Request id: %s. Trace id %s&quot;
+             user-id request-id trace-id)
+  (let [response (http/get &quot;http://host.night-sky/api/star&quot;
+                           {:oauth        (:night-sky auth/tokens)
+                            :query-params {:star-id star-id}
+                            :headers      {:user-id user-id
+                                           :request-id request-id
+                                           :root-trace root-trace
+                                           :originating-system originating-system}})
+        body (j/read-value (:body response))]
+    (log/infof &quot;Received star: %s. Request id: %s. Trace id %s&quot;
+                body request-id trace-id)
+    body))
+</code></pre>
+<p>Most of the body of <code>find-star</code> is not about finding a star. It&rsquo;s about logging, tracing, and authentication. What if we wanted to change our logging library? Or improve our log messages?</p>
+<p>We need an abstraction. But what should it look like?</p>
+<h2 id="library-locker-example">Library Locker Example</h2>
+<p>We decide to pull out the common code in a single function called <code>get</code>. The purpose will be to make get calls to other services we own, while not needing to repeat ourselves in each service call.</p>
+<pre><code class="language-clojure">(ns app.http
+  (:require [app.auth-tokens :as auth]
+            [clj-http.client :as http]
+            [clojure.tools.logging :as log]
+            [jsonista :as j]))
+
+(defn get
+  &quot;Wrap the clj-http `get` call to unify
+  handling of logging, tracing, and authentication.
+
+  Parameters
+  ----------
+  - `url`: the URL to call.
+  - `http-options`: clj-http options&quot;
+  [url
+   {:keys [query-params] :as http-options}
+   {user-id    :user/id
+    star-id    :star/id
+    root-trace :root-trace/id
+    request-id :request/id
+    service    :service/name
+    :keys      [originating-system]
+    :or        {originating-system &quot;observatory&quot;}
+    :as options}]
+  (log/infof &quot;User %s is requesting star %s. Request id: %s. Trace id %s&quot;
+             user-id request-id trace-id)
+  (let [response (http/get &quot;http://host.night-sky/api/star&quot;
+                           (-&gt; http-options
+                               (assoc :oauth (get auth/tokens service))
+                               (assoc-in [:headers :user-id] user-id)
+                               (assoc-in [:headers :request-id] request-id)
+                               (assoc-in [:headers :root-trace] root-trace)
+                               (assoc-in [:headers :originating-system] root-trace)))
+        body (j/read-value (:body response))]
+      (log/infof &quot;Received star: %s. Request id: %s. Trace id %s&quot;
+                 body request-id trace-id)
+      body))
+</code></pre>
+<p>Now, we have a handy function, that looks similar to clj-http&rsquo;s get function, except that it gives us some additional functionality.</p>
+<p>This lets us dramatically simplify our <code>find-star</code> function:</p>
+<pre><code class="language-clojure">(ns app.service.night-sky
+  &quot;Handles interactions with Night-Sky, a microservice owned by our team&quot;
+  (:require [app.http :as http]))
+
+(defn find-star
+  &quot;What stars are in the night-sky?&quot;
+  [{user-id    :user/id
+    star-id    :star/id
+    root-trace :root-trace/id}]
+  (http/get &quot;http://host.night-sky/api/star&quot;
+            {:query-params {:star-id star-id}}
+            {:user/id       user-id
+             :service/name  :night-sky
+             :root-trace/id root-trace}))
+</code></pre>
+<p>Amazing! Or is it?</p>
+<p>Notice that we have <em>reduced</em> the functionality of clj-http&rsquo;s library. <code>clj-http.client/get</code> has an async mode:</p>
+<pre><code class="language-clojure">(client/get &quot;http://example.com&quot;
+            {:async? true}
+            ;; respond callback
+            (fn [response] (println &quot;response is:&quot; response))
+            ;; raise callback
+            (fn [exception] (println &quot;exception message is: &quot; (.getMessage exception))))
+</code></pre>
+<p>But the async mode cannot be used. We&rsquo;re locked into synchronous mode.</p>
+<p>Moreover, while it was convenient to parse the body of the response, we&rsquo;ve reduced the amount of information we return. We only return the body. We couldn&rsquo;t access the headers if we wanted to!</p>
+<p>It would be very hard to write <code>get</code> using test driven development. And if it&rsquo;s hard to test, it&rsquo;s poorly designed.</p>
+<p>Notice that every function call within our <code>app.http/get</code> couples us to something:</p>
+<p><em>Http library</em>. We&rsquo;re coupled to clj-http. If we were to want to use another library for a special purpose, like aleph, we cannot reuse our <code>get</code> function.</p>
+<p><em>Logging</em>. While we might easily change the log library, note that we log the entire response. But some responses may be long, or may have information that cannot be logged for security reasons. What if we want to log some of the headers from a certain service? What we shouldn&rsquo;t log a key in the response?</p>
+<p><em>Parsing</em>. What if we want to use transit instead of JSON for our responses? What if we want keywordized keys in some cases, but not other cases (where, say, there are keys with spaces in them)?</p>
+<p>As the requirements around service calls grow, we will likely see a proliferation of parameters so that <code>get</code> can support a broader variety of behaviors. For example, if we want to excise sensitive information from the response body, we may pass a further parameter to <code>get</code>. Or, if we want to change the response format, we may pass in a <code>:response/format</code> argument.</p>
+<p>Extending the behavior of <code>get</code> will be error prone. We will be tempted to add defaults, such as a default timeout. This could easily break existing callers. Over time, the function signature will become more and more polluted, and <code>get</code> will be more complex to use and understand.</p>
+<p>What if we want to add validation on the parameters? Check the response against a contract? Stub out functions for testing?</p>
+<h2 id="library-locker-definition">Library Locker Definition</h2>
+<p>We can now offer something of a definition of the library locker antipattern. It occurs when:</p>
+<ul>
+<li>A third party library is wrapped in the application, such that:</li>
+<li>The functionality is reduced or changed, and</li>
+<li>The reduction or change is locked in the scope of the wrapper function, and</li>
+<li>The wrapper function typically extends its behavior by adding parameters</li>
+</ul>
+<p>Typically, this will result in a mixing of concerns, code churn on the wrapper function as new capabilities are needed, and the fragility that results from frequent modification.</p>
+<h2 id="design-principles">Design Principles</h2>
+<p>Functions should be focused. They should do one thing well. But our <code>get</code> function does many things: logging, authentication, parsing, etc.</p>
+<p>But our goal is to have a function that we can use in our <code>services</code> namespaces to easily call our other services. Is there a better way?</p>
+<p>The library locker is a case study in the opposite of the open-closed principle. We should be able to add functionality of our <code>get</code> functionality without changing <code>get</code>&rsquo;s source code. Instead, our <code>get</code> function serves as a shell that prevents us from extending its functionality.</p>
+<h2 id="alternatives">Alternatives</h2>
+<p>Let&rsquo;s consider several alternatives.</p>
+<h3 id="function-composition">Function Composition</h3>
+<p>Clojure is a functional language. Consequently, function composition should be top of mind for us in designing flexible software. Without it, Clojure can quickly turn into a scripting language with parentheses.</p>
+<p>We notice that we have three types of operations we&rsquo;re doing in our <code>get</code> function:</p>
+<ul>
+<li>Manipulation of the request map (e.g., adding headers)</li>
+<li>Handling the response (e.g., parsing the result)</li>
+<li>Doing something with both the request and the response (logging)</li>
+</ul>
+<p>We could easily compose functions:</p>
+<pre><code class="language-clojure">(defn trace
+  &quot;Trace a request&quot;
+  [trace-id req]
+  (assoc-in req [:headers :trace-id] trace-id))
+
+(defn identify-user
+  &quot;Identify the user to the service we are calling&quot;
+  [trace-id req]
+  (assoc-in req [:headers :user-id] trace-id))
+
+(defn identify-origin-system
+  &quot;Tell the callee service where the request originated&quot;
+  [req]
+  (assoc-in req [:headers :origin-system] &quot;observatory&quot;))
+
+(defn authenticate-service
+  &quot;Authenticate our service with the callee service&quot;
+  [service-name req]
+  (assoc-in req [:headers :oauth] (get auth/tokens service-name)))
+
+(defn prepare-request
+  [{user-id    :user/id
+    root-trace :root-trace/id
+    request-id :request/id
+    :keys      [originating-system]
+    :or        {originating-system &quot;observatory&quot;
+                request-id         (random-uuid)}}]
+  (comp (partial inject-root-trace root-trace)
+        inject-origin-system
+        inject-oath-token
+        (partial inject-user-id user-id))
+)
+</code></pre>
+<p>There are a few improvements that stand out immediately:</p>
+<ul>
+<li>Composability</li>
+<li>Extensibility</li>
+<li>Declarative abstraction</li>
+</ul>
+<h3 id="composability">Composability</h3>
+<p>It could easily be the case that requests will have different needs. For example, not all requests may originate from an end user.</p>
+<p>By separating behaviors into small, narrowly focused functions, and then composing them together, we can reuse each, and re-compose them in different circumstances.</p>
+<h3 id="extensibility">Extensibility</h3>
+<p>Because we are composing functions, we always have the option of further function composition. Particular <code>service</code> namespaces, for instance, can compose <code>prepare-request</code> to their own unique needs.</p>
+<p>Each of our functions has become more declarative. Each of our functions says what it does, not how it does it. Instead of <code>set-user-id-header</code>, we <code>identify-user</code>. Should we have a different way of doing this in the future, we don&rsquo;t need to change the function name.</p>
+<p>This lets us not need to worry about how each function manipulates the request. Our function is more readable by hiding the details. Should anything change about how we identify our user in the future, we probably won&rsquo;t need to change our <code>prepare-request</code> function.</p>
+<p>Moreover, this composition pattern would work with a number of functions in the same http client library, and by other http client libraries, should we choose to use them.</p>
+<h2 id="middleware">Middleware</h2>
+<p>Function composition is simple, but has some limitations. Note that our functions can access only the request, not the request and response together. If this is a limitation, middleware might be a better pattern.</p>
+<p><code>clj-http</code> <a href="https://github.com/dakrone/clj-http#custom-middleware">supports</a> middleware, but it is simple to roll your own in a library-independent fashion.</p>
+<h2 id="aspect-oriented-programming">Aspect Oriented Programming</h2>
+<p>Logging is a cross-cutting concern that can be handled with aspect-oriented approach. It can be handy to instrument functions to capture certain parameters and return values. AOP can be configured differently in different environments as well.</p>
+<p>Functions can be made easier to read, because the logging is injected via a library like <a href="https://github.com/clojure-land/robert-hooke">Robert Hooke</a> or <a href="https://github.com/jpmonettas/hansel">Hansel</a></p>
+<h1 id="objections">Objections</h1>
+<p>There are two common responses to function composition-type patterns:</p>
+<ol>
+<li>&ldquo;It&rsquo;s less readable. I can&rsquo;t see what it does! It&rsquo;s more complicated, not less.&rdquo;</li>
+<li>&ldquo;Why spend time splitting things up, or establishing library-independent patterns? YAGNI.&rdquo;</li>
+</ol>
+<p>These are, I would argue, misunderstandings of what we aim for with readability and YAGNI.</p>
+<h2 id="readability">Readability</h2>
+<p>If function composition as such is less readable, my suggestion would be that the paradigm of functional programming has not been fully internalized. The trouble is not that function composition as such is less readable, but that a functional language like Clojure is less readable to those who don&rsquo;t understand functional programming.</p>
+<p>But the readability problem may go to an even more basic misunderstanding of good software design. Good software design separates &ldquo;what&rdquo; from &ldquo;how&rdquo;. It creates abstractions that allow you to use things by understanding what they are for, without needing to understand the internal mechanisms by which they accomplish it.</p>
+<p>Failure to establish this semantic separation means that one has to understand everything to do anything. It leads to situations where, in order to understand something as high level as domain logic, one has to worry about the structure of HTTP calls, database table structures, authorization, etc.</p>
+<p>In other words, failure to establish semantic layers is the &ldquo;easy&rdquo; path that leads to the big ball of mud. And developers get used to thinking of readable code as an imperative sequence, where all the mechanisms are gathered together.</p>
+<p>This is akin to the <a href="https://paulgraham.com/avg.html">blub paradox</a>. When one looks down at lower levels of abstraction, one appreciates the patterns with which one is familiar. But looking up to the levels above what one currently understands, patterns that enforce loose coupling and high cohesion, separation of concerns, etc., one thinks that it&rsquo;s all &ldquo;just more complex and harder to read.&rdquo;</p>
+<p>The solution is not to reduce code quality, but to elevate our own understanding of good software design, both in general software design and in functional programming.</p>
+<h2 id="yagni">YAGNI</h2>
+<p>Why spend the effort to make designs modular and extensible? Must we have a specific use case in mind to justify making code reusable?</p>
+<p>If our software can only be used for the use cases we now about now, it will be both brittle and inept. It will be brittle, because we have to alter working code to support new functionality. It will be inept, in contrast to the power of composable, flexible software that is open to cases not initially anticipated.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://thomascothran.tech/2023/08/library-locker/" title="The Library Locker - An Antipattern" target="_blank" rel="external">https://thomascothran.tech/2023/08/library-locker/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">2023, Thomas Cothran</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://thomascothran.tech/thomascothran.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank"><span class="text-dark">Thomas Cothran</span><small class="ml-1x">Software Developer</small></a></h3>
+        <div>FP, Clojure, Domain Driven Design</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://thomascothran.tech/2023/07/brittle-clojure/" title="Brittle Clojure: Creating Legacy Clojure Systems"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://thomascothran.tech/2023/11/readability/"
+                    title="The Wrong Kind of Readability"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" title="linkedin" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-linkedin"></i></a></li>
+    <li><a href="https://thomascothran.tech/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/thomas_cothran" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2023
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('\x3Cscript src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/clojure.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://thomascothran.tech/js/application.min.e4989ab4dc212027af8773861b05b6bc333a1217f6b0a1b3377a3a3dbd454483.js"></script>
+<script src="https://thomascothran.tech/js/plugin.min.ba889b64780656626c83f08057000ed74aeebb8331bd2e679f2f4e37e4f98552.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/thomascothran.tech',
+            CONTENT_URL: 'https:\/\/thomascothran.tech\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://thomascothran.tech/js/insight.min.716b0c6a00b68ccc31a2b65345f3412f4246ffa94a90f8e25d525528b4504f9937880692bbe619023233caba5d0a17ebe23d7cfb57cd3a88f23ea337ad5e4d00.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

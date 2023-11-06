@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Distributed Merges and Continuous Integration - Thomas Cothran, Software Developer
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="Feature branching with large monoliths causes merge hell. Microservices promise independent deployability. But sometimes you get distributed merge hell" />
+    <meta name="generator" content="Hugo 0.120.3 with theme pure" />
+    <title>Distributed Merges and Continuous Integration - Thomas Cothran, Software Developer</title>
+    
+    
+    <link rel="stylesheet" href="https://thomascothran.tech/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Distributed Merges and Continuous Integration" />
+<meta property="og:description" content="Feature branching with large monoliths causes merge hell. Microservices promise independent deployability. But sometimes you get distributed merge hell" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://thomascothran.tech/2023/07/distributed-merges/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-07-14T00:00:00+00:00" />
+
+<meta itemprop="name" content="Distributed Merges and Continuous Integration">
+<meta itemprop="description" content="Feature branching with large monoliths causes merge hell. Microservices promise independent deployability. But sometimes you get distributed merge hell"><meta itemprop="datePublished" content="2023-07-14T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-07-14T00:00:00+00:00" />
+<meta itemprop="wordCount" content="885">
+<meta itemprop="keywords" content="DORA,empiricism,evidence-based-software,microservices,continuous-integration," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Distributed Merges and Continuous Integration"/>
+<meta name="twitter:description" content="Feature branching with large monoliths causes merge hell. Microservices promise independent deployability. But sometimes you get distributed merge hell"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank">
+            <img class="img-circle img-rotate" src="https://thomascothran.tech/thomascothran.jpeg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Thomas Cothran</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Developer</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Louisville, KY</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/architecture/" class="category-list-link">architecture</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/clojure/" class="category-list-link">clojure</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/cs/" class="category-list-link">cs</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/design/" class="category-list-link">design</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/evidence-based-software/" class="category-list-link">evidence-based-software</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://thomascothran.tech/tags/abstraction/" class="tag-list-link" rel="1">abstraction<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/architecture/" class="tag-list-link" rel="1">architecture<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/brittle-clojure/" class="tag-list-link" rel="1">brittle-clojure<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/clojure/" class="tag-list-link" rel="3">clojure<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/continuous-integration/" class="tag-list-link" rel="1">continuous-integration<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/design/" class="tag-list-link" rel="1">design<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/dora/" class="tag-list-link" rel="2">dora<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/empiricism/" class="tag-list-link" rel="2">empiricism<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/evidence-based-software/" class="tag-list-link" rel="2">evidence-based-software<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/haskell/" class="tag-list-link" rel="1">haskell<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/javascript/" class="tag-list-link" rel="1">javascript<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/microservices/" class="tag-list-link" rel="2">microservices<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/recursion/" class="tag-list-link" rel="2">recursion<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/robust-clojure/" class="tag-list-link" rel="1">robust-clojure<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/11/readability/" class="title">The Wrong Kind of Readability</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-11-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-11-05</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/08/library-locker/" class="title">The Library Locker - An Antipattern</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-08-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-08-20</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/brittle-clojure/" class="title">Brittle Clojure: Creating Legacy Clojure Systems</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-23 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-23</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/distributed-merges/" class="title">Distributed Merges and Continuous Integration</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-14 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-14</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/dont-be-cremonini/" class="title">Don&#39;t Be a Cremonini</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-09</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-distributed-merges" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2023/07/distributed-merges/"
+    >Distributed Merges and Continuous Integration</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://thomascothran.tech/2023/07/distributed-merges/" class="article-date">
+  <time datetime="2023-07-14 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-14</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/architecture/"> architecture </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/dora/"> DORA </a>
+    <a class="article-tag-link" href="/tags/empiricism/"> empiricism </a>
+    <a class="article-tag-link" href="/tags/evidence-based-software/"> evidence-based-software </a>
+    <a class="article-tag-link" href="/tags/microservices/"> microservices </a>
+    <a class="article-tag-link" href="/tags/continuous-integration/"> continuous-integration </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 885 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 5 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>Among DORA&rsquo;s more controversial findings is that <a href="https://dora.dev/devops-capabilities/technical/trunk-based-development/">trunk based development</a> is superior to feature branching.</p>
+<blockquote>
+<p>Teams achieve higher levels of software delivery and operational performance (delivery speed, stability, and availability) if they follow these practices:</p>
+<ul>
+<li>Have three or fewer active branches in the application’s code repository.</li>
+<li>Merge branches to trunk at least once a day.</li>
+<li>Don’t have code freezes and don’t have integration phases.</li>
+</ul>
+</blockquote>
+<p>Since we know <a href="/2023/07/dont-be-cremonini/">not to be Cremoninis</a>, we won&rsquo;t be distracted by whether trunk-based development meets the HN trendiness standard, and we&rsquo;ll be skeptical of anectdotal appeals to experience</p>
+<p>Still, why does trunk based development predict higher performing teams?</p>
+<h1 id="the-core-principle-of-ci">The Core Principle of CI</h1>
+<p>The core principle of Continuous Integration is that there should be &ldquo;one interesting version&rdquo;.</p>
+<p>When we have multiple versions, spread across feature branches, we end up with &ldquo;merge hell&rdquo;.</p>
+<h2 id="merge-hell-example">Merge Hell Example</h2>
+<p>Consider a scenario where two developers are working on separate features for the same application. They each create a feature branch and spend a week developing their respective features. At the end of the week, they&rsquo;re ready to merge their changes back into the main branch, or the &rsquo;trunk'.</p>
+<p>However, because they&rsquo;ve been working in isolation, their changes conflict with each other, causing bugs that weren&rsquo;t present when the features were tested on their individual branches. This is &lsquo;merge hell&rsquo;, and it can significantly slow down the development process and reduce the overall quality of the software.</p>
+<p><a href="https://mermaid.live/edit#pako:eNqFkc0KgzAQhF9F9uwT5FzoqadeA2VN1hhqEombg4jv3qi0FH_a3LKz3-zAjKCCJhBgLF8jdo30xfpUcM7y2beK6FVTpJ7ioybkFGmrdTg48ryTVUPqGRIfw-udQgJK2COnnm-qOqIcWv-ZOoqGTm7_PfPDccMUjEbkQKuogq9bq_gr3SY7lPNq9tW5jHEWJXBDjiTMNppqTO3CT3kVE4f74BUIjolKSJ1GpotFE9GBqLHt85S05RBva8FLz9MLSV6f2Q"><img src="https://mermaid.ink/img/pako:eNqFkc0KgzAQhF9F9uwT5FzoqadeA2VN1hhqEombg4jv3qi0FH_a3LKz3-zAjKCCJhBgLF8jdo30xfpUcM7y2beK6FVTpJ7ioybkFGmrdTg48ryTVUPqGRIfw-udQgJK2COnnm-qOqIcWv-ZOoqGTm7_PfPDccMUjEbkQKuogq9bq_gr3SY7lPNq9tW5jHEWJXBDjiTMNppqTO3CT3kVE4f74BUIjolKSJ1GpotFE9GBqLHt85S05RBva8FLz9MLSV6f2Q?type=png" alt=""></a></p>
+<h2 id="trunk-based-development">Trunk Based Development</h2>
+<p>Trunk-based development is a strategy designed to avoid this problem. In this approach, all developers work on a single branch, the &rsquo;trunk&rsquo;.</p>
+<p>They integrate their changes frequently, at least once a day, and these changes are immediately tested. This frequent integration and testing ensure that issues are caught and resolved early, reducing the risk of merge hell.</p>
+<p>The most recent version of the trunk, assuming it has passed all tests, is considered the single &ldquo;interesting&rdquo; version of the application.</p>
+<h1 id="microservices">Microservices</h1>
+<p>Microservices are a means of implementing <a href="https://dora.dev/devops-capabilities/technical/loosely-coupled-architecture/">a loosely coupled architecture</a>. This too is predictive of higher performing software organizations.</p>
+<p>As we transition from a monolithic architecture to a microservices environment, the principles of trunk-based development remain relevant, but they take on a new dimension.</p>
+<p>In a microservices architecture, each service is developed, deployed, and scaled independently. This independence is a <a href="https://dora.dev/devops-capabilities/technical/loosely-coupled-architecture/">strength</a>.</p>
+<p>However, the merge hell can re-emerge in even more painful form <em>even if you practice trunk based development</em> in your services.</p>
+<h1 id="version-tetris">Version Tetris</h1>
+<p>Consider the common scenario of an enterprise application implemented with a single SPA and a set of supporting backend services. The SPA makes calls to these services, either directly or through an abstraction later like GraphQL.</p>
+<p>However, the changes to this service are not ready for end users yet. Either they haven&rsquo;t been signed off by the QA team, or the end users need trainings before they can use the new features.</p>
+<p>The reason doesn&rsquo;t matter. What does? You start holding versions back.</p>
+<p>Suppose you have a dev, staging, UAT, and production environment. A feature is completed in development and deployed to staging for QAs to review. However, production users certainly aren&rsquo;t ready yet, and UAT users don&rsquo;t want disruptions.</p>
+<p>So you decide not to deploy the more recent version to UAT or production.</p>
+<p>You start to end up with a situation that looks like this:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Dev Version</th>
+<th>Staging Version</th>
+<th>UAT Version</th>
+<th>Prod Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend SPA</td>
+<td>v100</td>
+<td>v100</td>
+<td>v90</td>
+<td>v85</td>
+</tr>
+<tr>
+<td>Auth Service</td>
+<td>v75</td>
+<td>v75</td>
+<td>v75</td>
+<td>v75</td>
+</tr>
+<tr>
+<td>Payments Service</td>
+<td>v50</td>
+<td>v49</td>
+<td>v45</td>
+<td>v40</td>
+</tr>
+<tr>
+<td>Snazzy Feature Service</td>
+<td>v60</td>
+<td>v57</td>
+<td>v53</td>
+<td>v50</td>
+</tr>
+</tbody>
+</table>
+<p>No two environments are the same! Inter-service dependencies are bad enough. But typically your front end will depend on most (or all) of the backend services. Just because your front end works in staging, doesn&rsquo;t mean it will work in UAT or production.</p>
+<p>You don&rsquo;t have one interesting version of your system, you have four. And they&rsquo;re probably interesting in the wrong way.</p>
+<p><img src="https://kroki.io/plantuml/svg/eNplksFugzAMhu88hcW9EtNIaS9TkbaekehOE4cILIbaJlUISG21d18ChmXJyc4X-_8TJ4dec6WH6yW68frMW4T4qKTQKBooizyGZwTwNb4kSTUle4o7VkU_0V9TPuhvKFGNXY1LU-bVFPx-RaF7v46RZrqnyCgm__tLwR-POxyR60Ghr7IlFZZRfK1WdaMiZGMk3nHEi7zZY8CHGDtzVZvHwHswe7OUSSrYbN6cezsoYz5hQc3W9Sw1bzvRBn4Lnzxp4ft6mLw9SnPzqJ3DeobP_BT4WzZ5m2Rpoud1CFk6JA2IHfVqVSjZDLXupAgc7dZsabOlezfruSgLUZoEaH7Zg_mq9v_-ApgBzkw=" alt=""></p>
+<p>But wait! It doesn&rsquo;t stop there &ndash; the versions have dependencies on <em>each other</em>.</p>
+<p>The frontend SPA will depend on various backend versions. For example, a change in payments on the frontend requires a change in the payments service on the backend.</p>
+<p><img src="https://kroki.io/plantuml/svg/eNplU01vgzAMvedXRNwrMS0p7WUq0tYzEttp4hBBxFDbUEFAaqf998VgIB8n2y9-78WOcuq16PRwu5K7KC-iljQ6d63SUlU0z9KI_hJKv8eXOC6m5IjxwAvyRzZSOugfmstubEq5kBKvJxOPm1S69_s4arIjRo4xdvm5Es_ng56l0EMnfZU9qvAE42uxqhsV1VZG4l2O8tre4Rr0Q42NGRXyiIqemrNZyiQF3e3erLktKOE-woOeve2Za1E3qg78FnzyxML39WD09lDcm4fCHtY7fKWfgT9gk7dJFhI-r4WgpYWwAIFVr1ZZ11ZDqZtWBY5wNFtCtrAPs54NJSHE4gDCl523ZTEdAJocAN6GTJM6lK1mXg3TkemaDmGrWezWYHkyHwh-1T_u7fN2" alt=""></p>
+<h1 id="distributed-merge-hell">Distributed Merge Hell</h1>
+<p>Now, you have the same problem as before, but much worse. We have recreated merge hell, and made it distributed.</p>
+<p>Our new &ldquo;merge&rdquo; is trying to identify the set of versions we can deliver to end users.</p>
+<p>Our new feature branches are the environments. The individual commits are the versions we bring into the environment.</p>
+<p>Using versions to control features is feature branching on the service level.</p>
+<h1 id="escaping-merge-hell">Escaping Merge Hell</h1>
+<p>There&rsquo;s only one way out. Versions should propagate to higher environments. You should have &ldquo;one interesting version&rdquo;.</p>
+<p>But this brings us back to the need for continuous integration. To integrate is to bring something together into a whole. To do so continuously means to avoid batching the work.</p>
+<p>The difficulty is this: to do this, you need a CI process that gives you confidence no regressions propagate to end users. That means an automated regression test suite you can depend on. It means contract testing to identify broken promises between services.</p>
+<p>But the bad news is the good news. This is necessary anyway to delivery quality software. If the rush to continuous delivery forces improvements in the CI process, what are the down sides?</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://thomascothran.tech/2023/07/distributed-merges/" title="Distributed Merges and Continuous Integration" target="_blank" rel="external">https://thomascothran.tech/2023/07/distributed-merges/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">2023, Thomas Cothran</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://thomascothran.tech/thomascothran.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank"><span class="text-dark">Thomas Cothran</span><small class="ml-1x">Software Developer</small></a></h3>
+        <div>FP, Clojure, Domain Driven Design</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://thomascothran.tech/2023/07/dont-be-cremonini/" title="Don&#39;t Be a Cremonini"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://thomascothran.tech/2023/07/brittle-clojure/"
+                    title="Brittle Clojure: Creating Legacy Clojure Systems"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" title="linkedin" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-linkedin"></i></a></li>
+    <li><a href="https://thomascothran.tech/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/thomas_cothran" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2023
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('\x3Cscript src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/clojure.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://thomascothran.tech/js/application.min.e4989ab4dc212027af8773861b05b6bc333a1217f6b0a1b3377a3a3dbd454483.js"></script>
+<script src="https://thomascothran.tech/js/plugin.min.ba889b64780656626c83f08057000ed74aeebb8331bd2e679f2f4e37e4f98552.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/thomascothran.tech',
+            CONTENT_URL: 'https:\/\/thomascothran.tech\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://thomascothran.tech/js/insight.min.716b0c6a00b68ccc31a2b65345f3412f4246ffa94a90f8e25d525528b4504f9937880692bbe619023233caba5d0a17ebe23d7cfb57cd3a88f23ea337ad5e4d00.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

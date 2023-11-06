@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        The Wrong Kind of Readability - Thomas Cothran, Software Developer
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
+In fact, developers disagree about what “readability” means. &amp;ldquo;Readability&amp;rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
+Readabilitya controls complexity by the use of abstractions." />
+    <meta name="generator" content="Hugo 0.120.3 with theme pure" />
+    <title>The Wrong Kind of Readability - Thomas Cothran, Software Developer</title>
+    
+    
+    <link rel="stylesheet" href="https://thomascothran.tech/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="The Wrong Kind of Readability" />
+<meta property="og:description" content="In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
+In fact, developers disagree about what “readability” means. &ldquo;Readability&rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
+Readabilitya controls complexity by the use of abstractions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://thomascothran.tech/2023/11/readability/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-05T00:00:00+00:00" />
+
+<meta itemprop="name" content="The Wrong Kind of Readability">
+<meta itemprop="description" content="In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
+In fact, developers disagree about what “readability” means. &ldquo;Readability&rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
+Readabilitya controls complexity by the use of abstractions."><meta itemprop="datePublished" content="2023-11-05T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-11-05T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1404">
+<meta itemprop="keywords" content="abstraction,clojure," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Wrong Kind of Readability"/>
+<meta name="twitter:description" content="In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
+In fact, developers disagree about what “readability” means. &ldquo;Readability&rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
+Readabilitya controls complexity by the use of abstractions."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank">
+            <img class="img-circle img-rotate" src="https://thomascothran.tech/thomascothran.jpeg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Thomas Cothran</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Developer</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Louisville, KY</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/architecture/" class="category-list-link">architecture</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/clojure/" class="category-list-link">clojure</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/cs/" class="category-list-link">cs</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/design/" class="category-list-link">design</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://thomascothran.tech/categories/evidence-based-software/" class="category-list-link">evidence-based-software</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://thomascothran.tech/tags/abstraction/" class="tag-list-link" rel="1">abstraction<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/architecture/" class="tag-list-link" rel="1">architecture<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/brittle-clojure/" class="tag-list-link" rel="1">brittle-clojure<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/clojure/" class="tag-list-link" rel="3">clojure<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/continuous-integration/" class="tag-list-link" rel="1">continuous-integration<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/design/" class="tag-list-link" rel="1">design<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/dora/" class="tag-list-link" rel="2">dora<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/empiricism/" class="tag-list-link" rel="2">empiricism<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/evidence-based-software/" class="tag-list-link" rel="2">evidence-based-software<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/haskell/" class="tag-list-link" rel="1">haskell<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/javascript/" class="tag-list-link" rel="1">javascript<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/microservices/" class="tag-list-link" rel="2">microservices<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/recursion/" class="tag-list-link" rel="2">recursion<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://thomascothran.tech/tags/robust-clojure/" class="tag-list-link" rel="1">robust-clojure<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/11/readability/" class="title">The Wrong Kind of Readability</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-11-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-11-05</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/08/library-locker/" class="title">The Library Locker - An Antipattern</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-08-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-08-20</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/brittle-clojure/" class="title">Brittle Clojure: Creating Legacy Clojure Systems</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-23 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-23</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/distributed-merges/" class="title">Distributed Merges and Continuous Integration</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-14 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-14</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://thomascothran.tech/2023/07/dont-be-cremonini/" class="title">Don&#39;t Be a Cremonini</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2023-07-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-07-09</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-readability-and-functional-programming" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2023/11/readability/"
+    >The Wrong Kind of Readability</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://thomascothran.tech/2023/11/readability/" class="article-date">
+  <time datetime="2023-11-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-11-05</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/clojure/"> Clojure </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/abstraction/"> abstraction </a>
+    <a class="article-tag-link" href="/tags/clojure/"> clojure </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1404 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 7 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?</p>
+<p>In fact, developers disagree about what “readability” means. &ldquo;Readability&rdquo; can be given two contrary meanings that we will call readability<!-- raw HTML omitted -->a<!-- raw HTML omitted --> and readability<!-- raw HTML omitted -->i<!-- raw HTML omitted -->.</p>
+<p>Readability<!-- raw HTML omitted -->a<!-- raw HTML omitted --> controls complexity by the use of abstractions. Readability<!-- raw HTML omitted -->i<!-- raw HTML omitted -->, on the other hand, is characterized by clearly expressing the implementation.</p>
+<p>Why does it matter? If we think in terms of readability<!-- raw HTML omitted -->i<!-- raw HTML omitted --></p>
+<ul>
+<li>Our Clojure code will look a lot like Java 7 with parenthesis. We won&rsquo;t functional programming techniques like function composition and higher order functions, nor will we make use of polymorphism. Rather, our namespaces will be essentially be classes and our functions static methods. They will be combined in imperative fashion.</li>
+<li>Spaghetti code will be the norm. For example, our business rules and our use cases will tend to be tied to our data sources. Our data layer will be at the center of the application, since we lack the facilities to abstract and invert the dependencies.</li>
+<li>Our codebase will not be expressive of the domain. Code that is readable<!-- raw HTML omitted -->i<!-- raw HTML omitted --> requires developers to understand the domain independently of the code base. Code that is readable<!-- raw HTML omitted -->a<!-- raw HTML omitted --> teaches you the domain.</li>
+</ul>
+<h2 id="an-example">An Example</h2>
+<p>To spell out the difference, we will use an example based approach. Our hypothetical application is a financial services application that, among other things, handles loans and loan applications.</p>
+<p>It uses a microservices architecture. Our first example will concern calls between services.</p>
+<pre><code class="language-clojure">(ns finco.loans
+  (:require [org.httpkit.client :as http]
+            [next.jdbc.sql :as sql]
+            [taoensso.timbre :as timbre]
+            [jsonista.core :as j]
+            [jackdaw.client :as kafka-client])
+  (:import [java.time.temporal ChronoUnit])
+
+(defn approve-loan
+  [{:keys [auth-token] :as config}
+   {:keys [jdbc-conn kafka-producer] :as connections}
+   {:keys [state first-name last-name date-of-birth debt income] :as applicant
+   {:keys [trace-id username user-id] :as ring-request}]
+  (let [state-minimum-age 
+        (-&gt; (sql/find-by-keys jdbc-conn 
+                              :state_minimum_loan_ages
+                              {:state state})
+            first 
+            :state_minimum_loan_ages/minimum_age)
+
+        years-old (.between ChronoUnit/YEARS 
+                            date-of-birth 
+                            (LocalDate/now))
+
+        old-enough? (&lt;= state-minimum-age years-old)
+        
+        _ (timbre/info &quot;Requesting credit score for &quot; first-name &quot; &quot; last-name &quot;. &quot; trace-id)
+
+        credit-score
+        (-&gt; @(http/get &quot;https://fincoloans.tech/api-gateway/credit-scores&quot;
+                        {:query-params {:first-name first-name 
+                                        :last-name last-name
+                                        :dob date-of-birth
+                         :headers {&quot;Authentication&quot; (str &quot;Bearer &quot; token)}
+                                   &quot;Trace-ID&quot; trace-id
+                                   &quot;Username&quot; username
+                                   &quot;UserID&quot; user-id}}})
+            :body 
+            j/read-value)
+
+        sufficient-credit? (&lt; 650 credit-score)]
+
+     (if (and old-enough? sufficient-credit?)
+
+       (do (timbre/info &quot;Loan approved &quot; applicant &quot; - &quot; trace-id)
+           (sql/insert! jdbc-conn :loan_approvals (merge application loan))
+           (kafka-client/produce! kafka-producer 
+                                  &quot;loan-approvals&quot; 
+                                  (j/write-value-as-string (merge application loan))})
+           :approved)
+
+       (do (timbre/info &quot;Loan Denied &quot; applicant &quot; - &quot; trace-id) 
+           (kafka-client/produce kafka-producer 
+                                 &quot;loan-denials&quot;
+                                 (j/write-value-as-string (merge application loan))
+           :denied))
+</code></pre>
+<p>We are not handling errors, and the actual business logic of a use case like this is more complex, but you get the idea.</p>
+<p>This function is readable<!-- raw HTML omitted -->i<!-- raw HTML omitted -->, but not readable<!-- raw HTML omitted -->a<!-- raw HTML omitted -->.</p>
+<h2 id="readabilitysubisub">Readability<!-- raw HTML omitted -->i<!-- raw HTML omitted --></h2>
+<p>It is readable<!-- raw HTML omitted -->i<!-- raw HTML omitted --> because it clearly expresses the details of how it works. We can learn quite a bit by reading the function:</p>
+<ul>
+<li>What the data sources are. We use http to request the credit score from one of our other microservices, rather than fetching it from a database or using an external service. We use a database table for the minimum age for a state.</li>
+<li>How authentication is done handled between services. We use a bearer token and add the username and user id to track just who is requesting the credit score.</li>
+<li>How tracing is implemented. We are using timbre and adding the trace in the logs.</li>
+<li>What libraries we use: http-kit, timbre, and jsonista.</li>
+</ul>
+<p>Readability<!-- raw HTML omitted -->i<!-- raw HTML omitted --> is an answer to the question &ldquo;how does this work?&rdquo;. All the implementation details are &ldquo;out front&rdquo;. One reads them and infers what the program is for.</p>
+<p>Now, clearly our <code>approve-loan</code> function is poorly written. Functions should &ldquo;do one thing&rdquo;, but our function does a number of things: calls various services, handles cross-cutting concerns like logging and tracing, implements authentication, updates the database and Kafka (in a non-transactional way).</p>
+<p>What&rsquo;s important to note is the reason <code>approve-loan</code> is poorly written: precisely because it is readable<!-- raw HTML omitted -->i<!-- raw HTML omitted -->. This means that if we expect functions in our codebase, especially the high level use cases, to clearly express how they work, then we are the problem.</p>
+<p>To repeat: the insistence on code being readable (in the sense of expressing how it works, preferring concrete implementations to abstractions) produces bad software. Readable<!-- raw HTML omitted -->i<!-- raw HTML omitted --> is easy, not simple.</p>
+<h4 id="abstraction">Abstraction</h4>
+<p>By contrast, readability<!-- raw HTML omitted -->a<!-- raw HTML omitted --> is readable because of its abstractions. Abstraction is not a programming-specific idea. It is best illustrated by scientific discovery. In scientific discovery, the inessentials are set aside, and a mental construction is used to unite things under a single idea.</p>
+<p>For example, Newton noticed that apples always fall perpendicular to the ground. His insight was into the idea that all things with mass might obey the same law of attraction: whether they be apples, planets, or tides. In formulating his law of gravitation, Newton was able to set aside the inessential (whether a thing is red or yellow, small or large, moving or still); what matters is simply a thing&rsquo;s mass.</p>
+<p>But the real moment of abstraction is not subtractive, it is creative. It is the production of a mental construct that brings order. In Newton&rsquo;s case, this is the law of universal gravitation: the force of gravity is proportional to the product of the mass of two objects divided by distance between their centers.</p>
+<p>The scientific example is not merely illustrative. The ability to abstract is what makes human beings intelligent. Recognizing patterns and repeating them to &ldquo;get things working&rdquo; are capacities we share with animals. But the construction of meaning &ndash; of theorems, explanations, and &ndash; yes &ndash; functions in Clojure &ndash; belongs to higher, human intelligence.</p>
+<h4 id="readabilitysubasub">Readability<!-- raw HTML omitted -->a<!-- raw HTML omitted --></h4>
+<p>In the context of programming, the subtractive is important but secondary to the constructive moment. Nevertheless, the question &ldquo;what is inessential&rdquo; is the best place to start.</p>
+<p>What do we not need to know about <code>approve-loan</code> to accomplish our purpose?</p>
+<ul>
+<li>How requests are authorized. This can be shuttled off to a function.</li>
+<li>How logging is implemented. This is a cross-cutting concern.</li>
+<li>Whether we use a database, a microservice we own, or an external microservice as a data source.</li>
+</ul>
+<p>Let&rsquo;s take a ports and adapters approach.</p>
+<pre><code class="language-clojure">(ns finco.loans)
+
+(defmulti get-credit-score
+  (fn [data-source {:keys [state first-name last-name date-of-birth] :as applicant}]
+    (class data-source)))
+
+(defmulti state-&gt;minimum-age
+  (fn [data-source state]
+    (class data-source)
+
+(defmulti create-approval!
+   (fn [data-source applicant loan]
+     (class data-source))
+
+(defn approve-loan2
+  [data-sources
+   {:keys [state first-name last-name date-of-birth debt income] :as applicant
+   {:keys [amount] :as loan}
+   {:keys [on-success! on-denial!]}]
+  (let [years-old (.between ChronoUnit/YEARS date-of-birth (LocalDate/now))
+
+        old-enough? (&lt;= (state-&gt;minimum-age (:state-laws data-sources) state)
+                        years-old)
+        
+        sufficient-credit? (&lt; 650 (get-credit-score (:credit-scores data-sources) applicant))]
+
+     (if (and old-enough? sufficient-credit?)
+
+       (do (create-approval! (:applications data-sources) applicant loan)
+           (when on-success! (on-success! applicant-loan)
+           :approved)
+
+       (do (when on-denial! (on-denial! applicant loan))
+           :denied)
+</code></pre>
+<p>Notice how simple this is compared to our previous implementation. Previously we were coupled to everything from a particular http library to the format of the responses from our services. Now we can focus on the application logic.</p>
+<p>Our application logic is quite stable. We could swap out the source for where we get our credit scores, or we could split out further microservices. If we decide to add a cache, we could use <code>on-success!</code> to populate it.</p>
+<p>In removing the inessentials, the expression of the essentials becomes much more clear. A developer who knows nothing about loans could get a good idea of what the business logic is just by glancing at this use case.</p>
+<h3 id="simple--easy">Simple / Easy</h3>
+<p>A developer who cannot think abstractly may have trouble with <code>approve-loan2</code>. &ldquo;Why can&rsquo;t I jump to the source?&rdquo; &ldquo;What is this really doing?&rdquo; But these are the wrong kinds of questions to be asking at the level of the business rules or the application logic.</p>
+<p>But in practice, defenses of readability<!-- raw HTML omitted -->i<!-- raw HTML omitted --> usually come in in the practice of <em>writing</em> code. It is certainly the case that what is easier to write in the moment takes less work than forming the right abstractions, thinking through semantic layers, and so on.</p>
+<p>But this is hard not because it is more typing, but because thinking through things intelligently, formulating ideas clearly and rigorously is hard work. It is easier to follow a pattern, easier to &ldquo;get things working&rdquo;, and delegate the understanding of a business to a product owner or business analyst.</p>
+<p>Here, the problem is not with abstractions. It is the limitation of one&rsquo;s own abilities. Fortunately, good software engineers are driven to self-improvement, and the challenge here is one of intellectual development.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://thomascothran.tech/2023/11/readability/" title="The Wrong Kind of Readability" target="_blank" rel="external">https://thomascothran.tech/2023/11/readability/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">2023, Thomas Cothran</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://thomascothran.tech/thomascothran.jpeg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank"><span class="text-dark">Thomas Cothran</span><small class="ml-1x">Software Developer</small></a></h3>
+        <div>FP, Clojure, Domain Driven Design</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://thomascothran.tech/2023/08/library-locker/" title="The Library Locker - An Antipattern"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://www.linkedin.com/in/thomas-cothran-02b24995/" target="_blank" title="linkedin" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-linkedin"></i></a></li>
+    <li><a href="https://thomascothran.tech/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+    <li><a href="https://twitter.com/thomas_cothran" target="_blank" title="twitter" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-twitter"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2023
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('\x3Cscript src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/clojure.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://thomascothran.tech/js/application.min.e4989ab4dc212027af8773861b05b6bc333a1217f6b0a1b3377a3a3dbd454483.js"></script>
+<script src="https://thomascothran.tech/js/plugin.min.ba889b64780656626c83f08057000ed74aeebb8331bd2e679f2f4e37e4f98552.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/thomascothran.tech',
+            CONTENT_URL: 'https:\/\/thomascothran.tech\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://thomascothran.tech/js/insight.min.716b0c6a00b68ccc31a2b65345f3412f4246ffa94a90f8e25d525528b4504f9937880692bbe619023233caba5d0a17ebe23d7cfb57cd3a88f23ea337ad5e4d00.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

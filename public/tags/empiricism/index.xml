@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>empiricism on Thomas Cothran, Software Developer</title>
+    <link>https://thomascothran.tech/tags/empiricism/</link>
+    <description>Recent content in empiricism on Thomas Cothran, Software Developer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>2023, Thomas Cothran</copyright>
+    <lastBuildDate>Fri, 14 Jul 2023 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://thomascothran.tech/tags/empiricism/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The Wrong Kind of Readability</title>
+      <link>https://thomascothran.tech/2023/11/readability/</link>
+      <pubDate>Sun, 05 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/11/readability/</guid>
+      <description>In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
+In fact, developers disagree about what “readability” means. &amp;ldquo;Readability&amp;rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
+Readabilitya controls complexity by the use of abstractions.</description>
+    </item>
+    
+    <item>
+      <title>The Library Locker - An Antipattern</title>
+      <link>https://thomascothran.tech/2023/08/library-locker/</link>
+      <pubDate>Sun, 20 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/08/library-locker/</guid>
+      <description>The &amp;ldquo;Library Locker&amp;rdquo; is a common anti-pattern for incorporating third party libraries into an application. The application wraps the library with its own function, which mixes concerns and makes the library more difficult to use.
+In this article, we will first consider the original problem the library locker is introduced to solve, then an example of the library locker, and then suggest better alternatives.
+The Problem Suppose we have system of microservices that support astronomical applications.</description>
+    </item>
+    
+    <item>
+      <title>Brittle Clojure: Creating Legacy Clojure Systems</title>
+      <link>https://thomascothran.tech/2023/07/brittle-clojure/</link>
+      <pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/07/brittle-clojure/</guid>
+      <description>This is the first in a multi-part series, &amp;ldquo;Brittle Clojure&amp;rdquo;. In this series, we will consider common patterns in Clojure which yield brittle systems, as well as methods to ensure robustness.
+None of the basic principles for building robust software are unique. Most literature, however, is focused on object-oriented systems. Our point of view will sometimes zoom in to Clojure &amp;ldquo;in the small&amp;rdquo;, and sometimes zoom out to distributed systems built with Clojure.</description>
+    </item>
+    
+    <item>
+      <title>Distributed Merges and Continuous Integration</title>
+      <link>https://thomascothran.tech/2023/07/distributed-merges/</link>
+      <pubDate>Fri, 14 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/07/distributed-merges/</guid>
+      <description>Among DORA&amp;rsquo;s more controversial findings is that trunk based development is superior to feature branching.
+Teams achieve higher levels of software delivery and operational performance (delivery speed, stability, and availability) if they follow these practices:
+Have three or fewer active branches in the application’s code repository. Merge branches to trunk at least once a day. Don’t have code freezes and don’t have integration phases. Since we know not to be Cremoninis, we won&amp;rsquo;t be distracted by whether trunk-based development meets the HN trendiness standard, and we&amp;rsquo;ll be skeptical of anectdotal appeals to experience</description>
+    </item>
+    
+    <item>
+      <title>Don&#39;t Be a Cremonini</title>
+      <link>https://thomascothran.tech/2023/07/dont-be-cremonini/</link>
+      <pubDate>Sun, 09 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/07/dont-be-cremonini/</guid>
+      <description>Differences of opinion about how we ought to write software have an air of the philosophical about them. Some prefer TDD and microservices, others may prefer monoliths and think that most testing is a waste of time. Or engineers may prefer to use continuous development methodologies, while businesses prefer a waterfall approach with decorative scrum ceremonies.
+Are we stuck with opinions? Must we be subjected to the obligatory &amp;ldquo;well, in my experience &amp;hellip;&amp;rdquo;?</description>
+    </item>
+    
+    <item>
+      <title>Haskell&#39;s Triangle</title>
+      <link>https://thomascothran.tech/2017/07/haskells-triangle/</link>
+      <pubDate>Mon, 17 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2017/07/haskells-triangle/</guid>
+      <description>The polymath Blaise Pascal envisaged a triangle built of numbers. Pascal’s triangle — as it is usually called, despite the fact that its discovery predated Pascal by centuries — has the interesting property that each number is the sum of the two numbers directly above it.
+In this post we will use Pascal’s triangle to demonstrate how recursion (i.e., a procedure that invokes itself in its definition) can be used to make complex problems easily soluble, using examples written in both Haskell and JavaScript.</description>
+    </item>
+    
+    <item>
+      <title>Recursion Made Simple with Roman Numerals</title>
+      <link>https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</link>
+      <pubDate>Mon, 17 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2017/07/recursion-with-roman-numerals/</guid>
+      <description>A procedure is recursive if it invokes itself. Thus:
+const toInfinityAndBeyond = num =&amp;gt; toInfinityAndBeyond(num + 1); Of course, toInfinityAndBeyond is only useful if, rather than seeking an answer, you want to blow your call stack. But you see the point: we find toInfinityAndBeyond in its own body. What possible use could this be?
+Recursion is often well suited to express the logic of a problem. Let’s take a simple problem: the conversion of Roman to Arabic numerals.</description>
+    </item>
+    
+  </channel>
+</rss>
