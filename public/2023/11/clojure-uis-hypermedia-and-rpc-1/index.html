@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>
-        The Library Locker - An Antipattern - Thomas Cothran, Software Developer
+        Have Clojure UIs Taken the Wrong Path? Part 1 - Thomas Cothran, Software Developer
       </title>
         <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -20,28 +20,40 @@
     <meta http-equiv="window-target" content="_top" />
     
     
-    <meta name="description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns." />
+    <meta name="description" content="The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.
+For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React&#43;” approach.
+But is this the right choice?
+I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential." />
     <meta name="generator" content="Hugo 0.121.2 with theme pure" />
-    <title>The Library Locker - An Antipattern - Thomas Cothran, Software Developer</title>
+    <title>Have Clojure UIs Taken the Wrong Path? Part 1 - Thomas Cothran, Software Developer</title>
     
     
     <link rel="stylesheet" href="https://thomascothran.tech/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
     
     <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
-    <meta property="og:title" content="The Library Locker - An Antipattern" />
-<meta property="og:description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns." />
+    <meta property="og:title" content="Have Clojure UIs Taken the Wrong Path? Part 1" />
+<meta property="og:description" content="The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.
+For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React&#43;” approach.
+But is this the right choice?
+I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://thomascothran.tech/2023/08/library-locker/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-08-20T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-08-20T00:00:00+00:00" />
+<meta property="og:url" content="https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-11-24T00:00:00+00:00" />
 
-<meta itemprop="name" content="The Library Locker - An Antipattern">
-<meta itemprop="description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns."><meta itemprop="datePublished" content="2023-08-20T00:00:00+00:00" />
-<meta itemprop="dateModified" content="2023-08-20T00:00:00+00:00" />
-<meta itemprop="wordCount" content="1941">
-<meta itemprop="keywords" content="design,clojure," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="The Library Locker - An Antipattern"/>
-<meta name="twitter:description" content="The library locker antipattern occurs when we try to add functionality to a library function, but do so without separating concerns."/>
+<meta itemprop="name" content="Have Clojure UIs Taken the Wrong Path? Part 1">
+<meta itemprop="description" content="The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.
+For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React&#43;” approach.
+But is this the right choice?
+I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential."><meta itemprop="datePublished" content="2023-11-24T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-11-24T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1780">
+<meta itemprop="keywords" content="engineering,hypermedia,rest," /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Have Clojure UIs Taken the Wrong Path? Part 1"/>
+<meta name="twitter:description" content="The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.
+For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React&#43;” approach.
+But is this the right choice?
+I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential."/>
 
     <!--[if lte IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -320,15 +332,15 @@ function tagCloud(where, min, max) {
   </div>
 </aside>
 <main class="main" role="main"><div class="content">
-  <article id="-library-locker-antipattern" class="article article-type-" itemscope
+  <article id="-clojure-uis-hypermedia-and-rpc-1" class="article article-type-" itemscope
     itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       <h1 itemprop="name">
   <a
     class="article-title"
-    href="/2023/08/library-locker/"
-    >The Library Locker - An Antipattern</a
+    href="/2023/11/clojure-uis-hypermedia-and-rpc-1/"
+    >Have Clojure UIs Taken the Wrong Path? Part 1</a
   >
 </h1>
 
@@ -336,232 +348,204 @@ function tagCloud(where, min, max) {
         
 <span class="article-date">
   <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://thomascothran.tech/2023/08/library-locker/" class="article-date">
-  <time datetime="2023-08-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-08-20</time>
+<a href="https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/" class="article-date">
+  <time datetime="2023-11-24 00:00:00 &#43;0000 UTC" itemprop="datePublished">2023-11-24</time>
 </a>
 </span>
 <span class="article-category">
   <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/design/"> design </a>
+  <a class="article-category-link" href="/categories/architecture/"> Architecture </a>
+  <a class="article-category-link" href="/categories/clojure/"> Clojure </a>
 </span>  
   <span class="article-tag">
     <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/design/"> design </a>
-    <a class="article-tag-link" href="/tags/clojure/"> clojure </a>
+    <a class="article-tag-link" href="/tags/engineering/"> engineering </a>
+    <a class="article-tag-link" href="/tags/hypermedia/"> hypermedia </a>
+    <a class="article-tag-link" href="/tags/rest/"> rest </a>
   </span>
 
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1941 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1780 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 9 minutes </span>
       </div>
     </div>
     <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
-      <p>The &ldquo;Library Locker&rdquo; is a common anti-pattern for incorporating third party libraries into an application. The application wraps the library with its own function, which mixes concerns and makes the library more difficult to use.</p>
-<p>In this article, we will first consider the original problem the library locker is introduced to solve, then an example of the library locker, and then suggest better alternatives.</p>
-<h2 id="the-problem">The Problem</h2>
-<p>Suppose we have system of microservices that support astronomical applications. We locate our calls to our other microservices in a <code>service</code> directory.</p>
-<p>Quickly, we find a certain pattern repeating itself. We need to prepare a request map and parse the response.</p>
-<pre><code class="language-clojure">(ns app.service.night-sky
-  &quot;Handles interactions with Night-Sky, a microservice owned by our team&quot;
-  (:require [app.auth-tokens :as auth]
-            [clj-http.client :as http]
-            [clojure.tools.logging :as log]
-            [jsonista :as j]))
-
-(defn find-star
-  &quot;Find a star in the night sky&quot;
-  [{user-id    :user/id
-    star-id    :star/id
-    root-trace :root-trace/id
-    request-id :request/id
-    :keys      [originating-system]
-    :or        {originating-system &quot;observatory&quot;
-                request-id         (random-uuid)}}]
-  (log/infof &quot;User %s is requesting star %s. Request id: %s. Trace id %s&quot;
-             user-id request-id trace-id)
-  (let [response (http/get &quot;http://host.night-sky/api/star&quot;
-                           {:oauth        (:night-sky auth/tokens)
-                            :query-params {:star-id star-id}
-                            :headers      {:user-id user-id
-                                           :request-id request-id
-                                           :root-trace root-trace
-                                           :originating-system originating-system}})
-        body (j/read-value (:body response))]
-    (log/infof &quot;Received star: %s. Request id: %s. Trace id %s&quot;
-                body request-id trace-id)
-    body))
+      <p>The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.</p>
+<p>For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React+” approach.</p>
+<p>But is this the right choice?</p>
+<p>I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential. Rather, the problems are accidental; they are generated by the React+ architecture.</p>
+<p>A more fruitful foundation for interactive web UIs in Clojure is, I will argue, an extended Hypermedia approach. I will clarify what I mean by the extended hypermedia terminology as we proceed. To give some initial indication, think of HTMX on one end of the spectrum and Phoenix LiveView on the other.</p>
+<p>Over the course of this blog series, we will envision a future where we don&rsquo;t have to worry about huge <code>node_modules/</code> directories, JavaScript dependencies, a build process, externs, code splitting, front end routing, complex synchronization between back and frontend, hydration, running a CLJ and CLJS REPLs, shared cljc files, etc, etc.</p>
+<p>First, let’s consider a brief overview of the main ClojureScript UI libraries.</p>
+<h2 id="react">React+</h2>
+<p>Reagent provides a very simple model. Store your state as ClojureScript data in an atom, provide a function that returns your view in hiccup.</p>
+<p>But state management is complicated. Rum took the approach of entirely separating state management, enabling its users to choose whatever state management approach they liked.</p>
+<p>Re-frame manages this complexity by introducing views on the state (via subscriptions) and using an event system to manage changes in state. Re-frame represents state changes and effects as data.</p>
+<p>But as the size of the app-db grows, it can require significant discipline to maintain its coherent structure. It is very easy to get view components that are tightly coupled to the app db structure, and an event system that is tightly coupled to backend APIs. Local reasoning can be quite difficult, as things become spread out among event handlers, subscriptions, and the backend service.</p>
+<p>Fulcro takes a few steps further, and improves on the ability to reason locally. Fulcro defines queries on the view components and composes those queries together to make API calls to the server using EQL. It then normalizes that data into a graph database.</p>
+<p>Fulcro does a lot more: it has a built-in way of setting up the initial state. It provides a nice way of doing mutations. Its tight integration with EQL provides powerful mechanisms for graph queries. Fulcro also provides a rapid application development framework.</p>
+<p>The proliferation of different UI libraries and frameworks does not result from fundamental differences on presentation. The complexity is not how to render a view; the complexity is managing state. React itself provides a simple model: application state → view.</p>
+<h2 id="its-really-rpc">It&rsquo;s Really RPC</h2>
+<p>Let’s back up a bit and think about the data interchange between client and server.</p>
+<p>Which of these looks more like a RESTful response?</p>
+<p>Example 1:</p>
+<pre><code class="language-json">{
+  &quot;tasks&quot;: [
+    {
+      &quot;id&quot;: &quot;TSK001&quot;,
+      &quot;status&quot;: &quot;Assigned&quot;,
+      &quot;project&quot;: &quot;PRJ0001&quot;
+    },
+    {
+      &quot;id&quot;: &quot;TSK002&quot;,
+      &quot;status&quot;: &quot;Accepted&quot;,
+      &quot;project&quot;: &quot;PRJ0002&quot;
+    }
+  ]
+}
 </code></pre>
-<p>Most of the body of <code>find-star</code> is not about finding a star. It&rsquo;s about logging, tracing, and authentication. What if we wanted to change our logging library? Or improve our log messages?</p>
-<p>We need an abstraction. But what should it look like?</p>
-<h2 id="library-locker-example">Library Locker Example</h2>
-<p>We decide to pull out the common code in a single function called <code>get</code>. The purpose will be to make get calls to other services we own, while not needing to repeat ourselves in each service call.</p>
-<pre><code class="language-clojure">(ns app.http
-  (:require [app.auth-tokens :as auth]
-            [clj-http.client :as http]
-            [clojure.tools.logging :as log]
-            [jsonista :as j]))
-
-(defn get
-  &quot;Wrap the clj-http `get` call to unify
-  handling of logging, tracing, and authentication.
-
-  Parameters
-  ----------
-  - `url`: the URL to call.
-  - `http-options`: clj-http options&quot;
-  [url
-   {:keys [query-params] :as http-options}
-   {user-id    :user/id
-    star-id    :star/id
-    root-trace :root-trace/id
-    request-id :request/id
-    service    :service/name
-    :keys      [originating-system]
-    :or        {originating-system &quot;observatory&quot;}
-    :as options}]
-  (log/infof &quot;User %s is requesting star %s. Request id: %s. Trace id %s&quot;
-             user-id request-id trace-id)
-  (let [response (http/get &quot;http://host.night-sky/api/star&quot;
-                           (-&gt; http-options
-                               (assoc :oauth (get auth/tokens service))
-                               (assoc-in [:headers :user-id] user-id)
-                               (assoc-in [:headers :request-id] request-id)
-                               (assoc-in [:headers :root-trace] root-trace)
-                               (assoc-in [:headers :originating-system] root-trace)))
-        body (j/read-value (:body response))]
-      (log/infof &quot;Received star: %s. Request id: %s. Trace id %s&quot;
-                 body request-id trace-id)
-      body))
+<p>Or example 2:</p>
+<pre><code class="language-html">&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;a href=&quot;/task/TSK001&quot;&gt;TSK001&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;assigned-icon&quot;&gt;&lt;a href=&quot;/task/TSK001/accept&quot;&gt;Accept&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;PRJ0001&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;a href=&quot;/task/TSK002&quot;&gt;TSK002&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;Accepted&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;/project/PRJ0002&quot;&gt;PRJ0002&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr
+&lt;/tbody&gt;
 </code></pre>
-<p>Now, we have a handy function, that looks similar to clj-http&rsquo;s get function, except that it gives us some additional functionality.</p>
-<p>This lets us dramatically simplify our <code>find-star</code> function:</p>
-<pre><code class="language-clojure">(ns app.service.night-sky
-  &quot;Handles interactions with Night-Sky, a microservice owned by our team&quot;
-  (:require [app.http :as http]))
-
-(defn find-star
-  &quot;What stars are in the night-sky?&quot;
-  [{user-id    :user/id
-    star-id    :star/id
-    root-trace :root-trace/id}]
-  (http/get &quot;http://host.night-sky/api/star&quot;
-            {:query-params {:star-id star-id}}
-            {:user/id       user-id
-             :service/name  :night-sky
-             :root-trace/id root-trace}))
+<p>The answer is the latter. However, in a perverse irony, many developers today would confidently say it is the former.</p>
+<p>Roy Fielding (creator of the term REST), expressed his frustration with JSON-RPC APIs being mislabeled as REST:</p>
+<blockquote>
+<p>I am getting frustrated by the number of people calling any HTTP-based interface a REST API. Today’s example is the SocialSite REST API. That is RPC. It screams RPC. There is so much coupling on display that it should be given an X rating.</p>
+<p>What needs to be done to make the REST architectural style clear on the notion that hypertext is a constraint? In other words, if the engine of application state (and hence the API) is not being driven by hypertext, then it cannot be RESTful and cannot be a REST API. Period. Is there some broken manual somewhere that needs to be fixed?</p>
+</blockquote>
+<p>A key insight emerges when contrasting REST with RPC. With RPC, the data interchanged between the client and the server requires the client to have <em>implementation time knowledge</em>. That is, the client application must be custom-built for your particular application.</p>
+<p>Contrast that with a browser. Do the makers of the browser need to know anything about our business&rsquo; app? This is the key difference between a hypermedia and RPC response.</p>
+<p>Carson Gross puts it this way:</p>
+<blockquote>
+<p>HTML encodes both the data about [your domain entities, e.g. tasks] as well as the actions available on that data.</p>
+<p>Contrast this with a thick client, such as a standard mobile application. For a standard thick client a specific [business entity’s] screen must be built, with the actions on that data already encoded into the UI. The UI simply retrieves the data and then renders it locally, with the actions defined locally. To do something new you will need a new version of the [client] application.</p>
+<p>[With HTML,] the client (a browser) doesn’t know anything about the data, it just knows how to render hypertext. A technical way to say this is that we are using Hypertext As The Engine Of the Application State.</p>
+</blockquote>
+<p>This principle is essential to REST. Fielding again:</p>
+<blockquote>
+<p>A truly RESTful API looks like hypertext&hellip;  Resource representations are self-descriptive: the client does not need to know if a resource is from OpenSocial [substitute your domain entity here] because it is just acting on the representations received.</p>
+</blockquote>
+<p>But why does it really matter? Is this really a question of labels?</p>
+<p>No. The RPC architecture is neither easy nor simple. It results in a massive amount of unnecessary code and fragility as applications grow in size.</p>
+<h2 id="unnecessary-code">Unnecessary Code</h2>
+<p>Look at our examples again, using edn this time.</p>
+<p>RPC example:</p>
+<pre><code class="language-edn">{:tasks [{:task/id &quot;TSK001&quot;
+          :task/status &quot;Assigned&quot;,
+          :task/project-id &quot;PRJ0001&quot;}
+         {:task/id &quot;TSK002&quot;
+          :task/status &quot;Accepted&quot;,
+          :task/project-id &quot;PRJ0001&quot;}]}
 </code></pre>
-<p>Amazing! Or is it?</p>
-<p>Notice that we have <em>reduced</em> the functionality of clj-http&rsquo;s library. <code>clj-http.client/get</code> has an async mode:</p>
-<pre><code class="language-clojure">(client/get &quot;http://example.com&quot;
-            {:async? true}
-            ;; respond callback
-            (fn [response] (println &quot;response is:&quot; response))
-            ;; raise callback
-            (fn [exception] (println &quot;exception message is: &quot; (.getMessage exception))))
+<p>HTML example:</p>
+<pre><code class="language-edn">&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;a href=&quot;/task/TSK001&quot;&gt;TSK001&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;assigned-icon&quot;&gt;&lt;a href=&quot;/task/TSK001/accept&quot;&gt;Accept&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+    &lt;td&gt;PRJ0001&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;a href=&quot;/task/TSK002&quot;&gt;TSK002&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;Accepted&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;/project/PRJ0002&quot;&gt;PRJ0002&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
 </code></pre>
-<p>But the async mode cannot be used. We&rsquo;re locked into synchronous mode.</p>
-<p>Moreover, while it was convenient to parse the body of the response, we&rsquo;ve reduced the amount of information we return. We only return the body. We couldn&rsquo;t access the headers if we wanted to!</p>
-<p>It would be very hard to write <code>get</code> using test driven development. And if it&rsquo;s hard to test, it&rsquo;s poorly designed.</p>
-<p>Notice that every function call within our <code>app.http/get</code> couples us to something:</p>
-<p><em>Http library</em>. We&rsquo;re coupled to clj-http. If we were to want to use another library for a special purpose, like aleph, we cannot reuse our <code>get</code> function.</p>
-<p><em>Logging</em>. While we might easily change the log library, note that we log the entire response. But some responses may be long, or may have information that cannot be logged for security reasons. What if we want to log some of the headers from a certain service? What we shouldn&rsquo;t log a key in the response?</p>
-<p><em>Parsing</em>. What if we want to use transit instead of JSON for our responses? What if we want keywordized keys in some cases, but not other cases (where, say, there are keys with spaces in them)?</p>
-<p>As the requirements around service calls grow, we will likely see a proliferation of parameters so that <code>get</code> can support a broader variety of behaviors. For example, if we want to excise sensitive information from the response body, we may pass a further parameter to <code>get</code>. Or, if we want to change the response format, we may pass in a <code>:response/format</code> argument.</p>
-<p>Extending the behavior of <code>get</code> will be error prone. We will be tempted to add defaults, such as a default timeout. This could easily break existing callers. Over time, the function signature will become more and more polluted, and <code>get</code> will be more complex to use and understand.</p>
-<p>What if we want to add validation on the parameters? Check the response against a contract? Stub out functions for testing?</p>
-<h2 id="library-locker-definition">Library Locker Definition</h2>
-<p>We can now offer something of a definition of the library locker antipattern. It occurs when:</p>
+<p>What can I do with TSK001? Where can the user find more information about it?</p>
+<p>It&rsquo;s impossible to tell from the RPC example. In order for the user to be able to do something with this response we need to ship (sideband) custom code. The React+ approach is to ship an entire custom application on top of the existing hypermedia client application. Only to ultimately generate HTML on the frontend.</p>
+<p>By contrast, the hypermedia response contains, as data, both the information the user needs to see, and the controls the user needs to act on the information. A user can navigate to a task or project, accept a task, etc.</p>
+<p>Consider the table below, where we ask what features we would have to write or modify a custom client for:</p>
+<table>
+  <tr>
+    <th>Feature</th>
+    <th>RPC Approach</th>
+    <th>Hypermedia Approach</th>
+  </tr>
+  <tr>
+    <td>Add the "created at" for each task</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+  <tr>
+    <td>Add a "Decline Task" action</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+  <tr>
+    <td>Remove the ability to Accept a task</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+  <tr>
+    <td>Show the user that created the task</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+  <tr>
+    <td>Show the current assignee for a task</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+  <tr>
+    <td>Put a project on hold</td>
+    <td>Custom client code required</td>
+    <td>No custom client code required</td>
+  </tr>
+</table>
+<p>You get the point: RPC requires a custom client with extensive implementation-time knowledge of the application. This is expensive! And what do we get for it?</p>
+<p>The same HTML, usually buried in div soup: <code>&lt;div&gt;&lt;div&gt;&lt;div&gt;....&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></p>
+<p>The innocuous terminological questions &ldquo;REST&rdquo; and &ldquo;hypermedia&rdquo; turn out to be the small cracks that opens down into a deep, yawning chasm: all the custom code we do not need. The custom code we may never have needed.</p>
+<h1 id="separation-of-concerns">Separation of Concerns</h1>
+<p>One of the myths that appeas to Clojurians is that this is data:</p>
+<pre><code class="language-edn">{:task/id &quot;TKS001&quot;}
+</code></pre>
+<p>While this is not:</p>
+<pre><code class="language-html">&lt;a href=&quot;/task/TSK001&quot;&gt;TSK001&lt;/a&gt;
+</code></pre>
+<p>But this is false. Both the former and the latter are data. But can the EDN claim to at least separate concerns?</p>
+<p>In fact, the exact opposite is the case.</p>
+<p>Let’s return to our original example with the RESTful response and the JSON response. An approach that separates concerns will allow the client to be focused on UI concerns, excluding any special knowledge of the higher level concerns (such as business logic).</p>
+<p>Suppose that the user should be able to accept a task. How does the client know, given this response?</p>
+<pre><code class="language-edn">{:tasks [{:task/id &quot;TSK001&quot;
+          :task/status &quot;Assigned&quot;,
+          :task/project-id &quot;PRJ0001&quot;}
+         &quot;...&quot;]}
+</code></pre>
+<p>The answer is to put business logic into the client. There is no way for the browser client to know how to represent this to users so that they can see the information they need to see, and take the actions they want to take.</p>
+<p>With React+, we build a custom client and stick the business logic in it.
+The client must know the business rules that, given this user (using sideband information), and this task status, the the accept action is available.</p>
+<p>Far from separating concerns, the data API approach requires violating the separation of concerns. It involves creating a custom client, coupling it to EDN or JSON API, maintaining large amounts of state in the client, and spreading our business logic across both the server and client.</p>
+<p>By contrast, consider whether the client needs to have any special knowledge of the business rules with the RESTful response:</p>
+<pre><code class="language-html">&lt;tr&gt;
+  &lt;td&gt;&lt;a href=&quot;/task/TSK001&quot;&gt;TSK001&lt;/a&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;span class=&quot;assigned-icon&quot;&gt;&lt;a href=&quot;/task/TSK001/accept&quot;&gt;&lt;i class=&quot;fas fa-check&quot;&gt;&lt;/i&gt;Accept&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+  &lt;td&gt;PRJ0001&lt;/td&gt;
+&lt;/tr&gt;
+</code></pre>
+<p>Of course not! No client code of any kind is needed to understand this.</p>
+<p>Coupling is not determined by how we feel about our code. It has a strict definition: A and B are coupled if, for a given change Δ, changing A requires changing B.</p>
+<p>Applying that to our case, the client and server are coupled if and only if, in order to change whether the user can accept the task, changing the code on the server requires changing it on the client.</p>
+<p>Fortunately, hypermedia allows us to make these changes without opening a PR on Chrome.</p>
+<h1 id="further-reading">Further Reading</h1>
+<p>The <a href="https://hypermedia.systems">Hypermedia Systems Book</a> is an excellent contemporary discussion of the significance of hypermedia.</p>
+<h1 id="coming-up">Coming up&hellip;</h1>
+<p>In the rest of this series we will debunk some myths:</p>
 <ul>
-<li>A third party library is wrapped in the application, such that:</li>
-<li>The functionality is reduced or changed, and</li>
-<li>The reduction or change is locked in the scope of the wrapper function, and</li>
-<li>The wrapper function typically extends its behavior by adding parameters</li>
+<li>Following a REST or Hypermedia approach is incompatible with rich client interactivity</li>
+<li>Hypermedia == Plain HTML</li>
+<li>React+ is required for things like infinite scroll, inline edits, and offline functionality</li>
 </ul>
-<p>Typically, this will result in a mixing of concerns, code churn on the wrapper function as new capabilities are needed, and the fragility that results from frequent modification.</p>
-<h2 id="design-principles">Design Principles</h2>
-<p>Functions should be focused. They should do one thing well. But our <code>get</code> function does many things: logging, authentication, parsing, etc.</p>
-<p>But our goal is to have a function that we can use in our <code>services</code> namespaces to easily call our other services. Is there a better way?</p>
-<p>The library locker is a case study in the opposite of the open-closed principle. We should be able to add functionality of our <code>get</code> functionality without changing <code>get</code>&rsquo;s source code. Instead, our <code>get</code> function serves as a shell that prevents us from extending its functionality.</p>
-<h2 id="alternatives">Alternatives</h2>
-<p>Let&rsquo;s consider several alternatives.</p>
-<h3 id="function-composition">Function Composition</h3>
-<p>Clojure is a functional language. Consequently, function composition should be top of mind for us in designing flexible software. Without it, Clojure can quickly turn into a scripting language with parentheses.</p>
-<p>We notice that we have three types of operations we&rsquo;re doing in our <code>get</code> function:</p>
-<ul>
-<li>Manipulation of the request map (e.g., adding headers)</li>
-<li>Handling the response (e.g., parsing the result)</li>
-<li>Doing something with both the request and the response (logging)</li>
-</ul>
-<p>We could easily compose functions:</p>
-<pre><code class="language-clojure">(defn trace
-  &quot;Trace a request&quot;
-  [trace-id req]
-  (assoc-in req [:headers :trace-id] trace-id))
-
-(defn identify-user
-  &quot;Identify the user to the service we are calling&quot;
-  [trace-id req]
-  (assoc-in req [:headers :user-id] trace-id))
-
-(defn identify-origin-system
-  &quot;Tell the callee service where the request originated&quot;
-  [req]
-  (assoc-in req [:headers :origin-system] &quot;observatory&quot;))
-
-(defn authenticate-service
-  &quot;Authenticate our service with the callee service&quot;
-  [service-name req]
-  (assoc-in req [:headers :oauth] (get auth/tokens service-name)))
-
-(defn prepare-request
-  [{user-id    :user/id
-    root-trace :root-trace/id
-    request-id :request/id
-    :keys      [originating-system]
-    :or        {originating-system &quot;observatory&quot;
-                request-id         (random-uuid)}}]
-  (comp (partial inject-root-trace root-trace)
-        inject-origin-system
-        inject-oath-token
-        (partial inject-user-id user-id))
-)
-</code></pre>
-<p>There are a few improvements that stand out immediately:</p>
-<ul>
-<li>Composability</li>
-<li>Extensibility</li>
-<li>Declarative abstraction</li>
-</ul>
-<h3 id="composability">Composability</h3>
-<p>It could easily be the case that requests will have different needs. For example, not all requests may originate from an end user.</p>
-<p>By separating behaviors into small, narrowly focused functions, and then composing them together, we can reuse each, and re-compose them in different circumstances.</p>
-<h3 id="extensibility">Extensibility</h3>
-<p>Because we are composing functions, we always have the option of further function composition. Particular <code>service</code> namespaces, for instance, can compose <code>prepare-request</code> to their own unique needs.</p>
-<p>Each of our functions has become more declarative. Each of our functions says what it does, not how it does it. Instead of <code>set-user-id-header</code>, we <code>identify-user</code>. Should we have a different way of doing this in the future, we don&rsquo;t need to change the function name.</p>
-<p>This lets us not need to worry about how each function manipulates the request. Our function is more readable by hiding the details. Should anything change about how we identify our user in the future, we probably won&rsquo;t need to change our <code>prepare-request</code> function.</p>
-<p>Moreover, this composition pattern would work with a number of functions in the same http client library, and by other http client libraries, should we choose to use them.</p>
-<h2 id="middleware">Middleware</h2>
-<p>Function composition is simple, but has some limitations. Note that our functions can access only the request, not the request and response together. If this is a limitation, middleware might be a better pattern.</p>
-<p><code>clj-http</code> <a href="https://github.com/dakrone/clj-http#custom-middleware">supports</a> middleware, but it is simple to roll your own in a library-independent fashion.</p>
-<h2 id="aspect-oriented-programming">Aspect Oriented Programming</h2>
-<p>Logging is a cross-cutting concern that can be handled with aspect-oriented approach. It can be handy to instrument functions to capture certain parameters and return values. AOP can be configured differently in different environments as well.</p>
-<p>Functions can be made easier to read, because the logging is injected via a library like <a href="https://github.com/clojure-land/robert-hooke">Robert Hooke</a> or <a href="https://github.com/jpmonettas/hansel">Hansel</a></p>
-<h1 id="objections">Objections</h1>
-<p>There are two common responses to function composition-type patterns:</p>
-<ol>
-<li>&ldquo;It&rsquo;s less readable. I can&rsquo;t see what it does! It&rsquo;s more complicated, not less.&rdquo;</li>
-<li>&ldquo;Why spend time splitting things up, or establishing library-independent patterns? YAGNI.&rdquo;</li>
-</ol>
-<p>These are, I would argue, misunderstandings of what we aim for with readability and YAGNI.</p>
-<h2 id="readability">Readability</h2>
-<p>If function composition as such is less readable, my suggestion would be that the paradigm of functional programming has not been fully internalized. The trouble is not that function composition as such is less readable, but that a functional language like Clojure is less readable to those who don&rsquo;t understand functional programming.</p>
-<p>But the readability problem may go to an even more basic misunderstanding of good software design. Good software design separates &ldquo;what&rdquo; from &ldquo;how&rdquo;. It creates abstractions that allow you to use things by understanding what they are for, without needing to understand the internal mechanisms by which they accomplish it.</p>
-<p>Failure to establish this semantic separation means that one has to understand everything to do anything. It leads to situations where, in order to understand something as high level as domain logic, one has to worry about the structure of HTTP calls, database table structures, authorization, etc.</p>
-<p>In other words, failure to establish semantic layers is the &ldquo;easy&rdquo; path that leads to the big ball of mud. And developers get used to thinking of readable code as an imperative sequence, where all the mechanisms are gathered together.</p>
-<p>This is akin to the <a href="https://paulgraham.com/avg.html">blub paradox</a>. When one looks down at lower levels of abstraction, one appreciates the patterns with which one is familiar. But looking up to the levels above what one currently understands, patterns that enforce loose coupling and high cohesion, separation of concerns, etc., one thinks that it&rsquo;s all &ldquo;just more complex and harder to read.&rdquo;</p>
-<p>The solution is not to reduce code quality, but to elevate our own understanding of good software design, both in general software design and in functional programming.</p>
-<h2 id="yagni">YAGNI</h2>
-<p>Why spend the effort to make designs modular and extensible? Must we have a specific use case in mind to justify making code reusable?</p>
-<p>If our software can only be used for the use cases we now about now, it will be both brittle and inept. It will be brittle, because we have to alter working code to support new functionality. It will be inept, in contrast to the power of composable, flexible software that is open to cases not initially anticipated.</p>
+<p>And we will discuss an alternative path, extending the hypermedia approach to achieve the same (or better) functionality with vastly less complexity.</p>
 
     </div>
     <div class="article-footer">
@@ -569,7 +553,7 @@ function tagCloud(where, min, max) {
   <ul class="post-copyright list-unstyled">
     <li class="post-copyright-link hidden-xs">
       <strong>Permalink: </strong>
-      <a href="https://thomascothran.tech/2023/08/library-locker/" title="The Library Locker - An Antipattern" target="_blank" rel="external">https://thomascothran.tech/2023/08/library-locker/</a>
+      <a href="https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/" title="Have Clojure UIs Taken the Wrong Path? Part 1" target="_blank" rel="external">https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/</a>
     </li>
     <li class="post-copyright-license">
       <strong>License: </strong>
@@ -600,14 +584,9 @@ function tagCloud(where, min, max) {
     <div class="bar-inner">
         <ul class="pager pull-left">
             <li class="prev">
-                <a href="https://thomascothran.tech/2023/07/brittle-clojure/" title="Brittle Clojure: Creating Legacy Clojure Systems"><i
+                <a href="https://thomascothran.tech/2023/11/readability/" title="The Wrong Kind of Readability"><i
                         class="icon icon-angle-left"
                         aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
-            </li>
-            <li class="next">
-                <a href="https://thomascothran.tech/2023/11/readability/"
-                    title="The Wrong Kind of Readability"><span>Newer&nbsp;&nbsp;</span><i
-                        class="icon icon-angle-right" aria-hidden="true"></i></a>
             </li>
             
             <li class="toggle-toc">

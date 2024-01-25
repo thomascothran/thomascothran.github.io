@@ -13,14 +13,26 @@
     
     
     <item>
+      <title>Have Clojure UIs Taken the Wrong Path? Part 1</title>
+      <link>https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/</link>
+      <pubDate>Fri, 24 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://thomascothran.tech/2023/11/clojure-uis-hypermedia-and-rpc-1/</guid>
+      <description>The Clojure community has focused on React-based solutions for complex front-end clients such as Reagent, Rum, Om, Re-frame, and Fulcro.
+For all their differences, they follow a very similar architecture, making heavy use of client-side state and using RPC for client-server communication. We will call this the “React+” approach.
+But is this the right choice?
+I will suggest the answer may be negative. My suspicion is that as web UI libraries advance, the problems they solve are not essential.</description>
+    </item>
+    
+    <item>
       <title>The Wrong Kind of Readability</title>
       <link>https://thomascothran.tech/2023/11/readability/</link>
       <pubDate>Sun, 05 Nov 2023 00:00:00 +0000</pubDate>
       
       <guid>https://thomascothran.tech/2023/11/readability/</guid>
       <description>In the Pragmatic Programmer, Andy Hunt and Dave Thomas tell us: “it’s critical that you write code that is readable and easy to reason about.” This seems uncontroversial; it is the rare point on which software engineers typically agree. Or do they?
-In fact, developers disagree about what “readability” means. &amp;ldquo;Readability&amp;rdquo; can be given two contrary meanings that we will call readabilitya and readabilityi.
-Readabilitya controls complexity by the use of abstractions.</description>
+In fact, developers disagree about what “readability” means. &amp;ldquo;Readability&amp;rdquo; can be given two contrary meanings that we will call imperative readability (or readability-i) and declarative-readability (or readability-d).
+Imperative Readability This form of readability focuses on how the code operates.</description>
     </item>
     
     <item>
